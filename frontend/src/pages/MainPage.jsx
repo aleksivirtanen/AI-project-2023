@@ -8,7 +8,6 @@ const MainPage = () => {
   const inputRef = useRef();
   const [inputs, setInputs] = useState([]);
   const [responses, setResponses] = useState([]);
-  const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [checkPrevious, setCheckPrevious] = useState(false);
@@ -33,7 +32,7 @@ const MainPage = () => {
         "'";
     } else {
       question =
-        "If you can not assist with a question because it's not allowed, start your response with 'I can't answer.', then give out your answer. " +
+        "If you can't answer the question because it's not allowed, start your response with 'I can't answer.', then give out your answer. " +
         inputRef.current.value;
     }
     setInputs([...inputs, inputRef.current.value]);
@@ -103,7 +102,6 @@ const MainPage = () => {
         setResponses([...responses, responseData.choices[0].message.content]);
       }
 
-      setCounter(counter + 1);
       console.log(responseData.choices[0]);
     } catch (error) {
       console.error("Error while fetching chat data:", error);
@@ -115,26 +113,37 @@ const MainPage = () => {
     const responseContent = responses[index];
     return (
       <>
-        <div>INPUT: {value}</div>
+        <div class="messageInput">
+          <h1 class="input">You</h1> <div class="input">{value}</div>
+        </div>
         {typeof responses[index] !== "undefined" && (
-          <div>OUTPUT: {responseContent}</div>
+          <div class="messageOutput">
+            <h1 class="output">ChatGPT</h1>{" "}
+            <div class="output">{responseContent}</div>
+          </div>
         )}
       </>
     );
   });
 
   return (
-    <div>
-      <Input id="input" ref={inputRef} />
-      <button type="button" disabled={disabled} onClick={clickHandler}>
-        Send
-      </button>
-      {loading && (
-        <div>
-          <LoadingSpinner />
+    <div class="mainContainer">
+      <div class="containerInput">
+        <div class="textInput">
+          <Input id="input" ref={inputRef} />
         </div>
-      )}
-      <section>{content}</section>
+        {!loading && (
+          <button type="button" disabled={disabled} onClick={clickHandler}>
+            Send
+          </button>
+        )}
+        {loading && (
+          <div>
+            <LoadingSpinner />
+          </div>
+        )}
+      </div>
+      <div class="containerChat">{content}</div>
     </div>
   );
 };
